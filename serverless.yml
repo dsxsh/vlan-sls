@@ -1,30 +1,41 @@
 service: vlan-flask
-app: vlan
-org: ryphon
+frameworkVersion: '4'
 
 provider:
   name: aws
-  runtime: python3.8
+  runtime: python3.12
+  architecture: x86_64
   memorySize: 256
+  timeout: 30
   stage: prod
   region: us-west-2
+  environment:
+    PYTHONPATH: /var/runtime
   iam:
     role: arn:aws:iam::456410706824:role/vlan-flask-sls
+  httpApi:
+    cors: true
 
 package:
-  exclude:
-    - node_modules/**
-    - .git/**
+  patterns:
+    - '!node_modules/**'
+    - '!.git/**'
+    - '!__pycache__/**'
+    - '!.pytest_cache/**'
+    - '!*.pyc'
 
 functions:
   app:
     handler: wsgi_handler.handler
     memorySize: 256
+    timeout: 30
     events:
-      - http: ANY /
-        cors: true
-      - http: 'ANY {proxy+}'
-        cors: true
+      - httpApi:
+          path: /
+          method: ANY
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
 
 custom:
   wsgi:
@@ -33,14 +44,19 @@ custom:
     packRequirements: false
   pythonRequirements:
     dockerizePip: non-linux
+    slim: true
+    strip: false
+    usePoetry: false
+    useStaticCache: true
+    useDownloadCache: true
   customDomain:
     domainName: api.itisamystery.com
     stage: prod
     certificateName: '*.itisamystery.com'
     createRoute53Record: true
-    #endpointType: 'regional'
+    endpointType: 'regional'
     securityPolicy: tls_1_2
-    apiType: rest
+    apiType: http
 
 plugins:
   - serverless-wsgi

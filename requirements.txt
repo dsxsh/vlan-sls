@@ -1,4 +1,4 @@
-flask
-boto3
-flask_cors
-firebase-admin
+flask>=3.0.0
+boto3>=1.28.0
+flask_cors>=4.0.0
+firebase-admin>=6.0.0

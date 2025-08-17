@@ -1,10 +1,20 @@
 {
   "name": "vlan-flask",
-  "description": "",
+  "description": "VLAN Flask API - Serverless Python Flask application",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
-    "serverless-domain-manager": "^5.1.0",
-    "serverless-python-requirements": "^5.1.0",
-    "serverless-wsgi": "^3.0.1"
+    "serverless": "^4.0.0",
+    "serverless-domain-manager": "^7.0.0",
+    "serverless-python-requirements": "^6.0.0",
+    "serverless-wsgi": "^3.0.3"
+  },
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "logs": "serverless logs -f app",
+    "info": "serverless info"
   }
 }
