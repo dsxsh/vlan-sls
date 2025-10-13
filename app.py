@@ -28,13 +28,28 @@ def gameStartup():
             auth.verify_id_token(token)
         else:
             return "Unauthorized", 401
+
         data = request.get_json()
-        if 'game' in data:
-            game = data['game']
-        if 'gameType' in data:
-            game_type = data['gameType']
-        if 'action' in data:
-            action = data['action']
+
+        # Validate required parameters
+        if not data or 'game' not in data or 'gameType' not in data or 'action' not in data:
+            return {'success': False, 'errorMsg': 'Missing required parameters: game, gameType, action'}, 400
+
+        game = data['game']
+        game_type = data['gameType']
+        action = data['action']
+
+        # Validate action
+        if action not in ['start', 'stop']:
+            return {'success': False, 'errorMsg': 'Invalid action. Must be "start" or "stop"'}, 400
+
+        # Validate game and gameType exist in configuration
+        available_games = asg.getGames()
+        if game not in available_games:
+            return {'success': False, 'errorMsg': 'Invalid game specified'}, 400
+        if game_type not in available_games[game]:
+            return {'success': False, 'errorMsg': 'Invalid gameType for specified game'}, 400
+
         resp = asg.scale(game, game_type, action)
         status = resp['ResponseMetadata']['HTTPStatusCode']
         if status == 200:
@@ -43,10 +58,12 @@ def gameStartup():
         else:
             ret['success'] = False
             ret['errorMsg'] = 'AWS Problems'
+    except auth.InvalidIdTokenError:
+        return {'success': False, 'errorMsg': 'Invalid authentication token'}, 401
     except Exception as e:
         ret['success'] = False
-        ret['errorMsg'] = 'Exception: {}'.format(e)
-        print(ret)
+        ret['errorMsg'] = 'An error occurred processing your request'
+        print(f"Error in gameStartup: {e}")  # Log detailed error server-side only
         return ret, 400
     return ret, status
 
@@ -58,8 +75,8 @@ def allGames():
         ret = asg.getGames()
         status = 200
     except Exception as e:
-        ret['success'] = False
-        ret['errorMsg'] = e
+        ret = {'success': False, 'errorMsg': 'Unable to retrieve games'}
+        print(f"Error in allGames: {e}")  # Log detailed error server-side only
         status = 500
     print(ret)
     return ret, status

@@ -1,5 +1,8 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: ryphon
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: vlan
 service: vlan-flask
-frameworkVersion: '4'
 
 provider:
   name: aws

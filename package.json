@@ -6,10 +6,10 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
-    "serverless": "^4.0.0",
-    "serverless-domain-manager": "^7.0.0",
-    "serverless-python-requirements": "^6.0.0",
-    "serverless-wsgi": "^3.0.3"
+    "serverless": "^4.21.0",
+    "serverless-domain-manager": "^8.0.0",
+    "serverless-python-requirements": "^6.1.2",
+    "serverless-wsgi": "^3.1.0"
   },
   "scripts": {
     "deploy": "serverless deploy",
