@@ -46,7 +46,8 @@ custom:
     pythonBin: python3
     packRequirements: false
   pythonRequirements:
-    dockerizePip: non-linux
+    dockerizePip: true
+    dockerImage: public.ecr.aws/sam/build-python3.12:latest
     slim: true
     strip: false
     usePoetry: false
@@ -55,8 +56,8 @@ custom:
   customDomain:
     domainName: api.itisamystery.com
     stage: prod
-    certificateName: '*.itisamystery.com'
-    createRoute53Record: true
+    certificateArn: arn:aws:acm:us-west-2:456410706824:certificate/27221420-dd39-49d2-89f1-3a90d06457c6
+    createRoute53Record: false
     endpointType: 'regional'
     securityPolicy: tls_1_2
     apiType: http
